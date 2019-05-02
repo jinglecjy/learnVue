@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>数据响应式原理</title>
+</head>
+
+<body>
+    <div id="App">
+        <h1>数据响应式原理(vue 3.0中通过ES6的proxy实现)</h1>
+        <div id="paragraph" v-text="myText"></div>
+        <input id="input" type="text" v-model="myText" />
+    </div>
+</body>
+<script>
+    const paragraph = document.getElementById('paragraph');
+    const input = document.getElementById('input');
+
+    // 需要代理的数据对象
+    const data = {
+        text: 'hello'
+    }
+
+    const handler = {
+        // 监控data中的text属性变化
+        set: function (target, prop, value) {
+            if (prop === 'text') {
+                //  更新数值
+
+                // 更新视图 M -> V
+                paragraph.innerHTML = value;
+                input.value = value;
+
+                return true;
+            }
+
+            else return false;
+        }
+    }
+
+    // 构造proxy 对象
+    const myText = new Proxy(data, handler);
+
+
+    // 赋值触发了set，初始化值
+    // myText代理了text属性，当text改变触发set
+    myText.text = data.text;
+
+    input.addEventListener('input', function(e) {
+        myText.text = e.target.value;
+    })
+</script>
+
+</html>
