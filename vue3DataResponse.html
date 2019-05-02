@@ -29,6 +29,7 @@
         set: function (target, prop, value) {
             if (prop === 'text') {
                 //  更新数值
+                target[prop] = value;
 
                 // 更新视图 M -> V
                 paragraph.innerHTML = value;
@@ -45,11 +46,12 @@
     const myText = new Proxy(data, handler);
 
 
-    // 赋值触发了set，初始化值
+    // 赋值触发了set，初始化视图
     // myText代理了text属性，当text改变触发set
     myText.text = data.text;
 
     input.addEventListener('input', function(e) {
+        // V -> M
         myText.text = e.target.value;
     })
 </script>
